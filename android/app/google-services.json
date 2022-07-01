@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "422297387756",
+    "project_id": "coupon-management-3ea8e",
+    "storage_bucket": "coupon-management-3ea8e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:422297387756:android:7046da2912b75df905dbc9",
+        "android_client_info": {
+          "package_name": "com.example.coupon_manegement"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "422297387756-9t7ltms8safm114v06ouheqebijdlm29.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3MMqWtEyaBxIv27veG-GWji_84o8S-GQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "422297387756-9t7ltms8safm114v06ouheqebijdlm29.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

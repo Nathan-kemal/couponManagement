@@ -11,47 +11,56 @@ class Login extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(''),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              decoration: InputDecoration(
-                  hintText: 'username',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20))),
+    return Container(
+      decoration: BoxDecoration(
+          image: DecorationImage(
+        image: AssetImage('images/b3.jpg'),
+        fit: BoxFit.cover,
+      )),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text('$user'),
+        ),
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                decoration: InputDecoration(
+                    hintText: 'username',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20))),
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              decoration: InputDecoration(
-                  hintText: 'password',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20))),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                decoration: InputDecoration(
+                    hintText: 'password',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20))),
+              ),
             ),
-          ),
-          ElevatedButton(onPressed: () {
-
-            if(user!=''){
-              if(user == 'AACA'){
-                Get.to(() => AACAScreen());
-                    // check firebase
-              }else if(user == 'CC'){
-                Get.to(() => CCScreen());
-                    // check firebase
-              }else if(user == 'Resdant'){
-                Get.to(() => ResdantScreen());
-                    // check firebase
-              }
-            }
-
-          }, child: Text('Login'))
-        ],
+            ElevatedButton(
+                onPressed: () {
+                  if (user != '') {
+                    if (user == 'AACA') {
+                      Get.to(() => AACAScreen());
+                      // check firebase
+                    } else if (user == 'CC') {
+                      Get.to(() => CCScreen());
+                      // check firebase
+                    } else if (user == 'Customer') {
+                      Get.to(() => ResdantScreen());
+                      // check firebase
+                    }
+                  }
+                },
+                child: Text('Login'))
+          ],
+        ),
       ),
     );
   }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AACAScreen extends StatefulWidget {
   const AACAScreen({Key? key}) : super(key: key);
@@ -8,70 +10,62 @@ class AACAScreen extends StatefulWidget {
 }
 
 class _AACAScreenState extends State<AACAScreen> {
-  bool? isCheked = true;
-  List<String> list = [
-    'AA',
-    'BB',
-    'CC',
-    'DD',
-    'EE',
-    'FF',
-    'GG',
-  ];
-  String selectedValue = 'BB';
-
+  TextEditingController textEditingController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(''),
-      ),
-      body: Center(
-        child: Column(
-          children: [
-            SizedBox(height: 40),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                maxLines: 5,
-                textAlign: TextAlign.center,
-                decoration: InputDecoration(
-                    hintText: 'Feedback',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20))),
-              ),
-            ),
-            Container(
-              width: 100,
-              child: DropdownButtonFormField(
-                   decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-            ),
-                value: selectedValue,
-                icon: Icon(Icons.keyboard_arrow_down),
-                items: list
-                    .map((String e) =>
-                        DropdownMenuItem(value: e, child: Text(e)))
-                    .toList(),
-                onChanged: (value) {
-                  selectedValue = value as String;
-                  setState(() {});
-                },
-              ),
-            ),
-            CheckboxListTile(
-              value: isCheked,
-              onChanged: (value) {
-                isCheked = value;
+    return Container(
+      decoration: BoxDecoration(
+          image: DecorationImage(
+        image: AssetImage('images/b3.jpg'),
+        fit: BoxFit.cover,
+      )),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: Text('AACA'),
+        ),
+        body: Center(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                SizedBox(height: 40),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Feedback should not empty';
+                      }
+                    },
+                    controller: textEditingController,
+                    maxLines: 5,
+                    textAlign: TextAlign.center,
+                    decoration: InputDecoration(
+                        hintText: 'Feedback',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20))),
+                  ),
+                ),
+                Container(
+                  width: 200,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        FirebaseFirestore.instance
+                            .collection('Messages')
+                            .add({'feedback': '${textEditingController.text}'});
 
-                setState(() {});
-              },
-              title: Text('Send To ALL'),
+                        textEditingController.clear();
+                      }
+                    },
+                    child: Text('Send'),
+                  ),
+                )
+              ],
             ),
-            Container(
-                width: 200,
-                child: ElevatedButton(onPressed: () {}, child: Text('Send')))
-          ],
+          ),
         ),
       ),
     );

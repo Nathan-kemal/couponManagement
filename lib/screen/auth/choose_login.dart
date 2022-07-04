@@ -49,9 +49,9 @@ class ChooseLogin extends StatelessWidget {
                   height: 75,
                   child: ElevatedButton(
                       onPressed: () {
-                        Get.to(() => Login(), arguments: 'Resdant');
+                        Get.to(() => Login(), arguments: 'Customer');
                       },
-                      child: Text('Resdant')),
+                      child: Text('Coustomer')),
                 ),
               ],
             ),

@@ -1,6 +1,8 @@
+import 'package:coupon_manegement/screen/MyButton.dart';
 import 'package:coupon_manegement/screen/page/cc/ccAACA.dart';
 import 'package:coupon_manegement/screen/page/cc/ccResdant.dart';
 import 'package:coupon_manegement/screen/page/cc/remove_accound.dart';
+import 'package:coupon_manegement/screen/page/coustomerlist.dart';
 import 'package:coupon_manegement/screen/page/feedback.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -23,63 +25,69 @@ class _CCScreenState extends State<CCScreen> {
         ),
       ),
       child: Scaffold(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Color(0xff212333),
         appBar: AppBar(
+          backgroundColor: Color(0xff212333),
           title: Text('CC'),
           actions: [
             IconButton(
               onPressed: () {
-                Get.to(() => FeedbackScreen());
+                Get.to(() => FeedbackScreen(), arguments: 'CC');
               },
               icon: Icon(Icons.email),
             ),
           ],
         ),
         body: Center(
-          child: Row(
+          child: Wrap(
             children: [
-              Expanded(
-                child: InkWell(
-                  onTap: () {
-                    Get.to(() => CCAACAScreen());
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      height: 100,
-                      color: Colors.red,
-                      child: Center(child: Text('AACA')),
-                    ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      Get.to(() => CCAACAScreen());
+                    },
+                    child:
+                        MyButton(title: 'AACA', imagePath: 'images/store.png'),
                   ),
                 ),
               ),
-              Expanded(
-                child: InkWell(
-                  onTap: () {
-                    Get.to(() => CCResdant());
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      height: 100,
-                      color: Colors.amber,
-                      child: Center(child: Text('Coustomer')),
-                    ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      Get.to(() => CCResdant());
+                    },
+                    child: MyButton(
+                        title: 'Coustomer', imagePath: 'images/man.png'),
                   ),
                 ),
               ),
-              Expanded(
-                child: InkWell(
-                  onTap: () {
-                    Get.to(() => RemoveAccount());
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      height: 100,
-                      color: Colors.red,
-                      child: Center(child: Text('Remove Account')),
-                    ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      Get.to(() => RemoveAccount());
+                    },
+                    child: MyButton(
+                        title: 'Remove Account',
+                        imagePath: 'images/delete-user.png'),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      Get.to(() => CoutomerList());
+                    },
+                    child: MyButton(
+                        title: 'Customer List',
+                        imagePath: 'images/customer.png'),
                   ),
                 ),
               ),

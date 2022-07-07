@@ -19,7 +19,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController houseNumber = TextEditingController();
   TextEditingController idNumber = TextEditingController();
   TextEditingController phoneNumber = TextEditingController();
-
+  bool isLoading = false;
+  String msg = '';
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -29,9 +30,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
         fit: BoxFit.cover,
       )),
       child: Scaffold(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Color(0xff212333),
         appBar: AppBar(
-          title: Text(''),
+          backgroundColor: Color(0xff212333),
+          title: Text(
+            'Registration Form',
+          ),
         ),
         body: Form(
           key: _formKey,
@@ -47,6 +51,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     }
                   },
                   decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
                       hintText: 'First Name',
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20))),
@@ -62,6 +68,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     }
                   },
                   decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
                       hintText: 'Last Name',
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20))),
@@ -77,6 +85,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     }
                   },
                   decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
                       hintText: 'House number',
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20))),
@@ -92,6 +102,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     }
                   },
                   decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
                       hintText: 'id  Number',
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20))),
@@ -106,7 +118,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       return 'Please enter Your PhoneNumber';
                     }
                   },
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
                       hintText: 'Phone  Number',
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20))),
@@ -118,36 +133,63 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       // Check Firebase
-
-                      final doc = FirebaseFirestore.instance
-                          .collection('all_resdant_database')
-                          .get()
-                          .then((value) {
-                        value.docs.forEach((element) {
-                          int counter = 0;
-                          int length = value.docs.length;
-                          final fn = element.get('first name');
-                          final ln = element.get('last name');
-                          final idn = element.get('id number');
-                          final housen = element.get('house number');
-
-                          if (fn == firstName.text &&
-                              ln == lastName.text &&
-                              idn == idNumber.text &&
-                              housen == houseNumber.text) {
-                            // Get.to(() => VerificationScreen(),
-                            //     arguments: 'FOUND');
-                            print('found');
-                          } else {}
-
-                          counter++;
-                        });
+                      setState(() {
+                        isLoading = true;
                       });
+                      try {
+                        final doc = FirebaseFirestore.instance
+                            .collection('all_resdant_database')
+                            .get()
+                            .then((value) {
+                          value.docs.forEach((element) {
+                            int counter = 0;
+                            int length = value.docs.length;
+                            final fn = element.get('first name');
+                            final ln = element.get('last name');
+                            final idn = element.get('id number');
+                            final housen = element.get('house number');
+
+                            if (fn == firstName.text &&
+                                ln == lastName.text &&
+                                idn == idNumber.text &&
+                                housen == houseNumber.text) {
+                              Get.to(() => VerificationScreen(), arguments: {
+                                'id number': idNumber.text,
+                                'house number': houseNumber.text,
+                                'first name': firstName.text,
+                                'last name': lastName.text,
+                              });
+                            } else {
+                              setState(() {
+                                isLoading = false;
+                                msg = 'User Not Found!';
+                              });
+                            }
+
+                            counter++;
+                          });
+                        });
+                      } catch (e) {}
                     }
                   },
                   child: Text('Next'),
                 ),
-              )
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              Text(
+                '$msg',
+                style: TextStyle(
+                  fontSize: 30,
+                  color: Colors.red,
+                  fontFamily: 'Odibee Sans',
+                ),
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              isLoading ? CircularProgressIndicator() : Container()
             ]),
           ),
         ),

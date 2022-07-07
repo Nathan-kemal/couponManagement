@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
 class ResdantOption extends StatefulWidget {
@@ -11,7 +10,7 @@ class ResdantOption extends StatefulWidget {
 }
 
 class _ResdantOptionState extends State<ResdantOption> {
-  int? defaultChoiceIndex;
+  int defaultChoiceIndex = 0;
 
   List<String> _choicesList = ['YES', 'NO'];
   Map<String, dynamic> map = Get.arguments;
@@ -26,14 +25,23 @@ class _ResdantOptionState extends State<ResdantOption> {
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: AppBar(title: Text('')),
+        appBar: AppBar(
+          title: Text(''),
+          backgroundColor: Colors.transparent,
+        ),
         body: Column(
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Card(
-                color: Colors.green[300],
                 child: Container(
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                          opacity: .9,
+                          fit: BoxFit.cover,
+                          image: AssetImage(
+                            'images/${map['item']}.jpg',
+                          ))),
                   height: 200,
                   child: Center(
                       child: Column(
@@ -45,9 +53,12 @@ class _ResdantOptionState extends State<ResdantOption> {
                         style: TextStyle(fontSize: 40),
                       ),
                       Text(
-                        '${map['price']}',
+                        'price: ${map['price']}',
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 40),
+                        style: TextStyle(
+                          fontSize: 40,
+                          color: Colors.white,
+                        ),
                       ),
                     ],
                   )),
@@ -92,7 +103,15 @@ class _ResdantOptionState extends State<ResdantOption> {
               width: 200,
               height: 75,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  FirebaseFirestore.instance
+                      .collection('CoustomerFeedback')
+                      .add({
+                    'id': '',
+                    'item': '${map['item']}',
+                    'isTaking': _choicesList[defaultChoiceIndex],
+                  });
+                },
                 child: Text(
                   'Send',
                   style: TextStyle(fontSize: 30),

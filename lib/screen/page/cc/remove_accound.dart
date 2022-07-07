@@ -19,11 +19,17 @@ class _RemoveAccountState extends State<RemoveAccount> {
   final _formKey = GlobalKey<FormState>();
   var doc;
   Map<String, dynamic>? check;
+  bool isLoading = false;
+  String msg = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('')),
+      backgroundColor: Color(0xff212333),
+      appBar: AppBar(
+        title: Text(''),
+        backgroundColor: Color(0xff212333),
+      ),
       body: Form(
         key: _formKey,
         child: Column(children: [
@@ -37,6 +43,8 @@ class _RemoveAccountState extends State<RemoveAccount> {
               },
               controller: idT,
               decoration: InputDecoration(
+                  fillColor: Colors.white,
+                  filled: true,
                   hintText: 'account id',
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20))),
@@ -45,19 +53,29 @@ class _RemoveAccountState extends State<RemoveAccount> {
           ElevatedButton(
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
-                doc = await FirebaseFirestore.instance
-                    .collection('all_resdant_database')
-                    .where('id number', isEqualTo: idT.text)
-                    .get()
-                    .then((value) {
-                  if (value.docs.isNotEmpty) {
-                    check = value.docs[0].data();
-                    setState(() {});
-                  } else {
-                    check = null;
-                    setState(() {});
-                  }
+                setState(() {
+                  isLoading = true;
                 });
+                try {
+                  doc = await FirebaseFirestore.instance
+                      .collection('Accounts')
+                      .doc('Coustomer')
+                      .collection('Registered')
+                      .where('id number', isEqualTo: idT.text)
+                      .get()
+                      .then((value) {
+                    if (value.docs.isNotEmpty) {
+                      check = value.docs[0].data();
+                      setState(() {});
+                    } else {
+                      check = null;
+                      setState(() {
+                        isLoading = false;
+                        msg = 'Account Not Found';
+                      });
+                    }
+                  });
+                } on FirebaseException catch (e) {}
               }
             },
             child: Text('Search'),
@@ -68,53 +86,97 @@ class _RemoveAccountState extends State<RemoveAccount> {
                     Center(
                         child: Text(
                       'Result',
-                      style:
-                          TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     )),
                     DataTable(
                       columns: [
                         DataColumn(
                             label: Text('ID',
                                 style: TextStyle(
+                                    color: Colors.white,
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold))),
                         DataColumn(
                             label: Text('Name',
                                 style: TextStyle(
+                                    color: Colors.white,
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold))),
                         DataColumn(
                             label: Text('House no',
                                 style: TextStyle(
+                                    color: Colors.white,
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold))),
                       ],
                       rows: [
                         DataRow(cells: [
-                          DataCell(Text(check?['id number'])),
                           DataCell(Text(
-                              '${check?['first name']} ${check?['last name']}')),
-                          DataCell(Text(check?['house number'])),
+                            check?['id number'],
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          )),
+                          DataCell(Text(
+                            '${check?['first name']} ${check?['last name']}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                            ),
+                          )),
+                          DataCell(Text(
+                            check?['house number'],
+                            style: const TextStyle(
+                              color: Colors.white,
+                            ),
+                          )),
                         ]),
                       ],
                     ),
                     ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.red,
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.red,
+                      ),
+                      onPressed: () async {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        try {
+                          FirebaseFirestore.instance
+                              .collection('Accounts')
+                              .doc('Coustomer')
+                              .collection('Registered')
+                              .doc(' ${check?['id number']}')
+                              .delete()
+                              .whenComplete(() {
+                            setState(() {
+                              isLoading = false;
+                            });
+                          });
+                        } on FirebaseException catch (e) {}
+                      },
+                      child: const Text(
+                        'Delete',
+                        style: TextStyle(
+                          fontSize: 30,
                         ),
-                        onPressed: () {},
-                        child: Text('Delete',
-                            style: TextStyle(
-                              fontSize: 30,
-                            )))
+                      ),
+                    )
                   ]),
                 )
               : Container(
                   child: Text(
-                    'Not foundFound',
+                    '$msg',
                     style: TextStyle(color: Colors.red),
                   ),
-                )
+                ),
+          SizedBox(
+            height: 30,
+          ),
+          isLoading ? CircularProgressIndicator() : Container()
         ]),
       ),
     );

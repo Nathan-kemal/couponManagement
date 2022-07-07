@@ -11,22 +11,6 @@ class ResdantScreen extends StatefulWidget {
 }
 
 class _ResdantScreenState extends State<ResdantScreen> {
-  String getImage(String item) {
-    switch (item) {
-      case 'oil':
-        return 'images/oil.jpeg';
-        break;
-      case 'flour':
-        return 'images/flour.jpg';
-        break;
-      case 'suger':
-        return 'images/suger.webp';
-        break;
-      default:
-        return '';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -36,8 +20,11 @@ class _ResdantScreenState extends State<ResdantScreen> {
         fit: BoxFit.cover,
       )),
       child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(title: Text('')),
+        backgroundColor: Color(0xff292D3F),
+        appBar: AppBar(
+          title: Text(''),
+          // backgroundColor: Color(0xff212333),
+        ),
         body: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
               .collection('cc_to_coustomer')
@@ -48,8 +35,6 @@ class _ResdantScreenState extends State<ResdantScreen> {
                 itemBuilder: (context, index) {
                   String item = '${snapshot.data?.docs[index].get('item')}';
 
-                  String imglnk = getImage(item);
-                  print('nathan the hacker $item');
                   return InkWell(
                     onTap: () {
                       Get.to(
@@ -64,21 +49,33 @@ class _ResdantScreenState extends State<ResdantScreen> {
                       child: Container(
                         decoration: BoxDecoration(
                             image: DecorationImage(
+                                opacity: .9,
                                 fit: BoxFit.cover,
                                 image: AssetImage(
-                                  'images/${snapshot.data?.docs[index].get('item')!}.jpeg',
+                                  'images/${snapshot.data?.docs[index].get('item')!}.jpg',
                                 ))),
                         height: 150,
                         child: Center(
                           child: Column(
                             children: [
-                              Text(
-                                '${snapshot.data?.docs[index].get('item')}',
-                                style: TextStyle(fontSize: 25),
+                              SizedBox(
+                                height: 40,
                               ),
                               Text(
-                                '${snapshot.data?.docs[index].get('price')}',
-                                style: TextStyle(fontSize: 25),
+                                'Item: ${snapshot.data?.docs[index].get('item')}',
+                                style: TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              Text(
+                                'Price: ${snapshot.data?.docs[index].get('price')}',
+                                style: TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green,
+                                ),
                               ),
                             ],
                           ),

@@ -1,4 +1,5 @@
 import 'package:coupon_manegement/screen/home.dart';
+import 'package:coupon_manegement/splashScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -8,7 +9,7 @@ void main() async {
   await Firebase.initializeApp();
   runApp(
     GetMaterialApp(
-      home: Home(),
+      home: SpalshScreen(),
     ),
   );
 }

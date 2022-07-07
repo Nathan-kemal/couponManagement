@@ -2,6 +2,7 @@ import 'package:coupon_manegement/screen/auth/choose_login.dart';
 import 'package:coupon_manegement/screen/auth/register_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
@@ -10,21 +11,48 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
+        color: Color(0xff292D3F),
         image: DecorationImage(
-          image: AssetImage("images/b2.jpg"),
-          fit: BoxFit.cover,
+          image: AssetImage("images/addisababa3.png"),
+          fit: BoxFit.contain,
         ),
       ),
       child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          title: Text(''),
-        ),
+        backgroundColor: Color.fromARGB(0, 0, 0, 0),
         body: Center(
             child: IntrinsicWidth(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              SizedBox(
+                height: 50,
+              ),
+              AnimatedTextKit(
+                animatedTexts: [
+                  TypewriterAnimatedText(
+                    speed: Duration(milliseconds: 100),
+                    textAlign: TextAlign.center,
+                    'Coupon Management System For Addis Ababa City Adminstraion',
+                    textStyle: TextStyle(
+                      color: Colors.white,
+                      fontSize: 35,
+                      fontFamily: 'Odibee Sans',
+                    ),
+                  ),
+                ],
+              ),
+              Text(''),
+              // Text(
+              //   textAlign: TextAlign.center,
+              //   'Coupon Management System For Addis Ababa City Adminstraion',
+              //   style: TextStyle(
+              //     fontSize: 35,
+              //     fontFamily: 'Odibee Sans',
+              //   ),
+              // ),
+              SizedBox(
+                height: 450,
+              ),
               Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
@@ -47,7 +75,8 @@ class Home extends StatelessWidget {
                     child: Text(
                       'LogIn',
                       style: TextStyle(
-                        fontSize: 30,
+                        fontFamily: 'Odibee Sans',
+                        fontSize: 40,
                         color: Colors.white,
                       ),
                     ),
@@ -74,7 +103,8 @@ class Home extends StatelessWidget {
                   child: Text(
                     'Register',
                     style: TextStyle(
-                      fontSize: 30,
+                      fontFamily: 'Odibee Sans',
+                      fontSize: 40,
                       color: Colors.white,
                     ),
                   ),

@@ -3,12 +3,29 @@ import 'package:coupon_manegement/screen/page/cc_screen.dart';
 import 'package:coupon_manegement/screen/page/resdant_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crypto/crypto.dart';
+import 'dart:convert';
 
-class Login extends StatelessWidget {
+class Login extends StatefulWidget {
   Login({Key? key}) : super(key: key);
+
+  @override
+  State<Login> createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+  final _formKey = GlobalKey<FormState>();
 
   String user = Get.arguments;
 
+  TextEditingController username = TextEditingController();
+
+  TextEditingController password = TextEditingController();
+  String msg = '';
+  bool isShown = true;
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -18,48 +35,133 @@ class Login extends StatelessWidget {
         fit: BoxFit.cover,
       )),
       child: Scaffold(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Color(0xff212333),
         appBar: AppBar(
           centerTitle: true,
-          title: Text('$user'),
+          title: Text(
+            '$user',
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: Color(0xff212333),
         ),
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                decoration: InputDecoration(
-                    hintText: 'username',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20))),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                decoration: InputDecoration(
-                    hintText: 'password',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20))),
-              ),
-            ),
-            ElevatedButton(
-                onPressed: () {
-                  if (user != '') {
-                    if (user == 'AACA') {
-                      Get.to(() => AACAScreen());
-                      // check firebase
-                    } else if (user == 'CC') {
-                      Get.to(() => CCScreen());
-                      // check firebase
-                    } else if (user == 'Customer') {
-                      Get.to(() => ResdantScreen());
-                      // check firebase
+        body: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'username should not be empty';
                     }
-                  }
-                },
-                child: Text('Login'))
-          ],
+                  },
+                  controller: username,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      hintText: 'username',
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20))),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'password should not be empty';
+                    }
+                  },
+                  controller: password,
+                  obscureText: isShown,
+                  decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            isShown = !isShown;
+                          });
+                        },
+                        icon: Icon(Icons.remove_red_eye),
+                      ),
+                      fillColor: Colors.white,
+                      filled: true,
+                      hintText: 'password',
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20))),
+                ),
+              ),
+              ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      if (user != '') {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        if (user == 'AACA') {
+                          var hash = md5
+                              .convert(utf8.encode(password.text))
+                              .toString();
+                          Get.to(() => AACAScreen());
+                          // check firebase
+                        } else if (user == 'CC') {
+                          var hash = md5
+                              .convert(utf8.encode(password.text))
+                              .toString();
+                          Get.to(() => CCScreen());
+                          // check firebase
+                        } else if (user == 'Customer') {
+                          var hash = md5
+                              .convert(utf8.encode(password.text))
+                              .toString();
+                          try {
+                            FirebaseFirestore.instance
+                                .collection('Accounts')
+                                .doc('Coustomer')
+                                .collection('Registered')
+                                .where('username', isEqualTo: username.text)
+                                .where('password', isEqualTo: hash)
+                                .get()
+                                .then((value) {
+                              if (value.docs.length > 0) {
+                                Get.to(() => ResdantScreen());
+                              } else {
+                                setState(() {
+                                  isLoading = false;
+                                  msg = 'Account not found!';
+                                });
+                              }
+                            });
+                          } on FirebaseException catch (e) {
+                            Get.snackbar(
+                              'Login',
+                              'Account not found!',
+                              colorText: Colors.red,
+                            );
+                          }
+
+                          //  Get.to(() => ResdantScreen());
+                          // check firebase
+                        }
+                      }
+                    }
+                  },
+                  child: Text('Login')),
+              Text(
+                '$msg',
+                style: TextStyle(
+                  fontSize: 30,
+                  color: Colors.red,
+                  fontFamily: 'Odibee Sans',
+                ),
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              isLoading ? CircularProgressIndicator() : Container()
+            ],
+          ),
         ),
       ),
     );

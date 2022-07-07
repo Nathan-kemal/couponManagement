@@ -31,8 +31,11 @@ class _CCResdantState extends State<CCResdant> {
         ),
       ),
       child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(title: Text('')),
+        backgroundColor: Color(0xff212333),
+        appBar: AppBar(
+          title: Text(''),
+          backgroundColor: Color(0xff212333),
+        ),
         body: Form(
           key: _formKey,
           child: Column(
@@ -41,14 +44,23 @@ class _CCResdantState extends State<CCResdant> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: DropdownButtonFormField(
+                  style: TextStyle(color: Colors.black),
                   decoration: const InputDecoration(
+                    fillColor: Colors.white,
+                    filled: true,
                     border: OutlineInputBorder(),
                   ),
                   value: selectedValue,
                   icon: Icon(Icons.keyboard_arrow_down),
                   items: list
-                      .map((String e) =>
-                          DropdownMenuItem(value: e, child: Text(e)))
+                      .map((String e) => DropdownMenuItem(
+                          value: e,
+                          child: Text(
+                            e,
+                            style: TextStyle(
+                              fontSize: 25,
+                            ),
+                          )))
                       .toList(),
                   onChanged: (value) {
                     selectedValue = value as String;
@@ -60,6 +72,9 @@ class _CCResdantState extends State<CCResdant> {
                   ? Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TextFormField(
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Litter should not be empty';
@@ -68,30 +83,20 @@ class _CCResdantState extends State<CCResdant> {
                         controller: textEditingControllerLitter,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
-                            hintText: 'Litter', border: OutlineInputBorder()),
+                            fillColor: Colors.white,
+                            filled: true,
+                            hintText: 'Litter',
+                            border: OutlineInputBorder()),
                       ),
                     )
                   : Container(),
-              selectedValue == 'flower'
+              selectedValue == 'flour'
                   ? Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Litter should not be empty';
-                          }
-                        },
-                        controller: textEditingControllerKg,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                            hintText: 'Flour', border: OutlineInputBorder()),
-                      ),
-                    )
-                  : Container(),
-              selectedValue == 'suger'
-                  ? Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Suger Kg should not be empty';
@@ -100,13 +105,41 @@ class _CCResdantState extends State<CCResdant> {
                         controller: textEditingControllerKg,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
-                            hintText: 'KG', border: OutlineInputBorder()),
+                            fillColor: Colors.white,
+                            filled: true,
+                            hintText: 'KG',
+                            border: OutlineInputBorder()),
+                      ),
+                    )
+                  : Container(),
+              selectedValue == 'suger'
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Suger Kg should not be empty';
+                          }
+                        },
+                        controller: textEditingControllerKg,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            fillColor: Colors.white,
+                            filled: true,
+                            hintText: 'KG',
+                            border: OutlineInputBorder()),
                       ),
                     )
                   : Container(),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Price should not be empty';
@@ -115,7 +148,10 @@ class _CCResdantState extends State<CCResdant> {
                   controller: textEditingController,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                      hintText: 'price', border: OutlineInputBorder()),
+                      fillColor: Colors.white,
+                      filled: true,
+                      hintText: 'price',
+                      border: OutlineInputBorder()),
                 ),
               ),
               ElevatedButton(
@@ -129,6 +165,7 @@ class _CCResdantState extends State<CCResdant> {
                             'item': '$selectedValue',
                             'Liter': '${textEditingControllerLitter.text}',
                             'price': '${textEditingController.text}',
+                            'time': Timestamp.now()
                           },
                         );
                       } else {
@@ -139,6 +176,7 @@ class _CCResdantState extends State<CCResdant> {
                             'item': '$selectedValue',
                             'Liter': '${textEditingControllerKg.text}',
                             'price': '${textEditingController.text}',
+                            'time': Timestamp.now()
                           },
                         );
                       }

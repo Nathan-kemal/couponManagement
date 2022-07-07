@@ -1,3 +1,4 @@
+import 'package:coupon_manegement/screen/MyButton.dart';
 import 'package:coupon_manegement/screen/auth/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,43 +16,46 @@ class ChooseLogin extends StatelessWidget {
         ),
       ),
       child: Scaffold(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Color(0xff212333),
         appBar: AppBar(
+          backgroundColor: Color(0xff212333),
           title: Text(''),
         ),
         body: Center(
           child: IntrinsicWidth(
-            stepWidth: 150,
+            stepWidth: 200,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Container(
-                  width: 200,
-                  height: 75,
-                  child: ElevatedButton(
-                      onPressed: () {
-                        Get.to(() => Login(), arguments: 'AACA');
-                      },
-                      child: Text('AACA')),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: InkWell(
+                    onTap: () {
+                      Get.to(() => Login(), arguments: 'AACA');
+                    },
+                    child: MyButton(
+                        title: 'AACA', imagePath: 'images/building.png'),
+                  ),
                 ),
-                SizedBox(height: 10),
-                Container(
-                  height: 75,
-                  child: ElevatedButton(
-                      onPressed: () {
-                        Get.to(() => Login(), arguments: 'CC');
-                      },
-                      child: Text('CC')),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: InkWell(
+                    onTap: () {
+                      Get.to(() => Login(), arguments: 'CC');
+                    },
+                    child: MyButton(title: 'CC', imagePath: 'images/store.png'),
+                  ),
                 ),
-                SizedBox(height: 10),
-                Container(
-                  height: 75,
-                  child: ElevatedButton(
-                      onPressed: () {
-                        Get.to(() => Login(), arguments: 'Customer');
-                      },
-                      child: Text('Coustomer')),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: InkWell(
+                    onTap: () {
+                      Get.to(() => Login(), arguments: 'Customer');
+                    },
+                    child: MyButton(
+                        title: 'Coustomer', imagePath: 'images/man.png'),
+                  ),
                 ),
               ],
             ),

@@ -1,6 +1,8 @@
+import 'package:coupon_manegement/screen/page/feedback.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 
 class AACAScreen extends StatefulWidget {
   const AACAScreen({Key? key}) : super(key: key);
@@ -12,6 +14,14 @@ class AACAScreen extends StatefulWidget {
 class _AACAScreenState extends State<AACAScreen> {
   TextEditingController textEditingController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+  String selectedValue = 'AA';
+  List<String> list = [
+    'AA',
+    'BB',
+    'CC',
+    'DD',
+  ];
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -21,9 +31,18 @@ class _AACAScreenState extends State<AACAScreen> {
         fit: BoxFit.cover,
       )),
       child: Scaffold(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Color(0xff212333),
         appBar: AppBar(
+          backgroundColor: Color(0xff212333),
           title: Text('AACA'),
+          actions: [
+            IconButton(
+              onPressed: () {
+                Get.to(() => FeedbackScreen(), arguments: 'AACA');
+              },
+              icon: Icon(Icons.email),
+            ),
+          ],
         ),
         body: Center(
           child: Form(
@@ -43,9 +62,38 @@ class _AACAScreenState extends State<AACAScreen> {
                     maxLines: 5,
                     textAlign: TextAlign.center,
                     decoration: InputDecoration(
+                        fillColor: Colors.white,
+                        filled: true,
                         hintText: 'Feedback',
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20))),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(18.0),
+                  child: DropdownButtonFormField(
+                    style: TextStyle(color: Colors.black),
+                    decoration: const InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      border: OutlineInputBorder(),
+                    ),
+                    value: selectedValue,
+                    icon: Icon(Icons.keyboard_arrow_down),
+                    items: list
+                        .map((String e) => DropdownMenuItem(
+                            value: e,
+                            child: Text(
+                              e,
+                              style: TextStyle(
+                                fontSize: 25,
+                              ),
+                            )))
+                        .toList(),
+                    onChanged: (value) {
+                      selectedValue = value as String;
+                      setState(() {});
+                    },
                   ),
                 ),
                 Container(
@@ -53,16 +101,17 @@ class _AACAScreenState extends State<AACAScreen> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        FirebaseFirestore.instance
-                            .collection('Messages')
-                            .add({'feedback': '${textEditingController.text}'});
+                        FirebaseFirestore.instance.collection('Messages').add({
+                          'sender': 'AACA',
+                          'feedback': '${textEditingController.text}'
+                        });
 
                         textEditingController.clear();
                       }
                     },
                     child: Text('Send'),
                   ),
-                )
+                ),
               ],
             ),
           ),

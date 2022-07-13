@@ -1,6 +1,7 @@
 import 'package:coupon_manegement/screen/page/cc/ccAACA.dart';
 import 'package:coupon_manegement/screen/page/feedback/AACACC.dart';
 import 'package:coupon_manegement/screen/page/feedback/CoustomerFeedBack.dart';
+import 'package:coupon_manegement/screen/page/feedback/cc_aacafeedback.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,16 +15,19 @@ class FeedbackScreen extends StatefulWidget {
 }
 
 class _FeedbackScreenState extends State<FeedbackScreen> {
-  String? arg = Get.arguments;
+  Map arg = Get.arguments;
   int index = 0;
-
-  List<Widget> pages = const [
-    AACACCScreen(),
-    CoustomerFeedback(),
-  ];
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> pages = [
+      // AACACCScreen(
+      //   type: arg['type'],
+      //   name: arg['name'],
+      // ),
+      CCAACAFeedback(name: arg['name']),
+      CoustomerFeedback(name: arg['name']),
+    ];
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -31,19 +35,19 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
           fit: BoxFit.cover,
         ),
       ),
-      child: arg == 'AACA'
+      child: arg['type'] == 'AACA'
           ? Scaffold(
               appBar: AppBar(
                 backgroundColor: Color(0xff212333),
-                title: Text('Feedback'),
+                title: Text('AACA Feedback'),
               ),
-              body: AACACCScreen(),
+              body: Container(),
             )
           : Scaffold(
               backgroundColor: Color(0xff212333),
               appBar: AppBar(
                 backgroundColor: Color(0xff212333),
-                title: Text('Feedback'),
+                title: Text('CC Feedback'),
               ),
               bottomNavigationBar: NavigationBar(
                 animationDuration: const Duration(seconds: 1),

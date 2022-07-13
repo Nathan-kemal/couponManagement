@@ -18,8 +18,28 @@ class ChooseLogin extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Color(0xff212333),
         appBar: AppBar(
+          actions: [
+            InkWell(
+                onTap: () {
+                  Get.to(() => Login(), arguments: 'ADMIN');
+                },
+                child: Row(
+                  children: [
+                    Icon(Icons.add),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Center(
+                      child: Text('Admin'),
+                    ),
+                    SizedBox(
+                      width: 15,
+                    ),
+                  ],
+                ))
+          ],
           backgroundColor: Color(0xff212333),
-          title: Text(''),
+          title: Text('Login'),
         ),
         body: Center(
           child: IntrinsicWidth(
@@ -54,7 +74,7 @@ class ChooseLogin extends StatelessWidget {
                       Get.to(() => Login(), arguments: 'Customer');
                     },
                     child: MyButton(
-                        title: 'Coustomer', imagePath: 'images/man.png'),
+                        title: 'Customer', imagePath: 'images/man.png'),
                   ),
                 ),
               ],

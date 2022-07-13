@@ -1,7 +1,9 @@
+import 'package:coupon_manegement/screen/admin/removec.dart';
 import 'package:coupon_manegement/screen/page/resdant/resdant_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class ResdantScreen extends StatefulWidget {
   const ResdantScreen({Key? key}) : super(key: key);
@@ -11,6 +13,7 @@ class ResdantScreen extends StatefulWidget {
 }
 
 class _ResdantScreenState extends State<ResdantScreen> {
+  Map mp = Get.arguments;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -22,6 +25,8 @@ class _ResdantScreenState extends State<ResdantScreen> {
       child: Scaffold(
         backgroundColor: Color(0xff292D3F),
         appBar: AppBar(
+          backgroundColor: Color(0xff292D3F),
+
           title: Text(''),
           // backgroundColor: Color(0xff212333),
         ),
@@ -34,16 +39,20 @@ class _ResdantScreenState extends State<ResdantScreen> {
                 itemCount: snapshot.data?.docs.length,
                 itemBuilder: (context, index) {
                   String item = '${snapshot.data?.docs[index].get('item')}';
-
+                  Timestamp time = snapshot.data?.docs[index].get('time');
                   return InkWell(
                     onTap: () {
                       Get.to(
                         () => ResdantOption(),
                         arguments: {
                           'item': '${snapshot.data?.docs[index].get('item')}',
-                          'price': '${snapshot.data?.docs[index].get('price')}'
+                          'price': '${snapshot.data?.docs[index].get('price')}',
+                          'id': mp['id'],
+                          'first name': mp['fn'],
+                          'last name': mp['fn'],
                         },
                       );
+                      // Get.to(() => MyHomePage());
                     },
                     child: Card(
                       child: Container(
@@ -77,6 +86,13 @@ class _ResdantScreenState extends State<ResdantScreen> {
                                   color: Colors.green,
                                 ),
                               ),
+                              Text(
+                                'time: ${time.toDate().year}-${time.toDate().month}-${time.toDate().day}',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              )
                             ],
                           ),
                         ),

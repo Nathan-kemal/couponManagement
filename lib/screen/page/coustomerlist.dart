@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 
 class CoutomerList extends StatefulWidget {
   const CoutomerList({Key? key}) : super(key: key);
@@ -12,6 +13,7 @@ class _CoutomerListState extends State<CoutomerList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(actions: []),
       backgroundColor: Color(0xff212333),
       body: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance

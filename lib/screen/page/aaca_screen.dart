@@ -15,13 +15,9 @@ class _AACAScreenState extends State<AACAScreen> {
   TextEditingController textEditingController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  String selectedValue = 'AA';
-  List<String> list = [
-    'AA',
-    'BB',
-    'CC',
-    'DD',
-  ];
+  var seleectedCC;
+  final GlobalKey<FormState> _formKeyValue = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -69,39 +65,67 @@ class _AACAScreenState extends State<AACAScreen> {
                             borderRadius: BorderRadius.circular(20))),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: DropdownButtonFormField(
-                    style: TextStyle(color: Colors.black),
-                    decoration: const InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: OutlineInputBorder(),
-                    ),
-                    value: selectedValue,
-                    icon: Icon(Icons.keyboard_arrow_down),
-                    items: list
-                        .map((String e) => DropdownMenuItem(
-                            value: e,
-                            child: Text(
-                              e,
-                              style: TextStyle(
-                                fontSize: 25,
+                StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection("all_cc_database")
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData)
+                        const Text("Loading.....");
+                      else {
+                        List<DropdownMenuItem> cclist = [];
+                        for (int i = 0; i < snapshot.data!.docs.length; i++) {
+                          DocumentSnapshot snap = snapshot.data!.docs[i];
+                          cclist.add(
+                            DropdownMenuItem<String>(
+                              child: Text(
+                                '${snap['cc name']}',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                ),
                               ),
-                            )))
-                        .toList(),
-                    onChanged: (value) {
-                      selectedValue = value as String;
-                      setState(() {});
-                    },
-                  ),
-                ),
+                              value: "${snap['cc name']}",
+                            ),
+                          );
+                        }
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            SizedBox(width: 50.0),
+                            DropdownButton<dynamic>(
+                              dropdownColor: Color(0xff212333),
+                              items: cclist,
+                              onChanged: (ccValue) {
+                                setState(() {
+                                  seleectedCC = ccValue;
+                                });
+                              },
+                              value: seleectedCC,
+                              isExpanded: false,
+                              hint: new Text(
+                                "Choose CC Type",
+                                style: TextStyle(color: Color(0xff11b719)),
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+
+                      return Container();
+                    }),
                 Container(
                   width: 200,
                   child: ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        FirebaseFirestore.instance.collection('Messages').add({
+                        FirebaseFirestore.instance
+                            .collection('all_cc_database')
+                            .doc(seleectedCC)
+                            .collection('feedbacks')
+                            .doc('AACA')
+                            .collection('feedback')
+                            .add({
                           'sender': 'AACA',
                           'feedback': '${textEditingController.text}'
                         });

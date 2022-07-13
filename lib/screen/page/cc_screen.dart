@@ -15,6 +15,7 @@ class CCScreen extends StatefulWidget {
 }
 
 class _CCScreenState extends State<CCScreen> {
+  String getCCName = Get.arguments;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -32,7 +33,8 @@ class _CCScreenState extends State<CCScreen> {
           actions: [
             IconButton(
               onPressed: () {
-                Get.to(() => FeedbackScreen(), arguments: 'CC');
+                Get.to(() => FeedbackScreen(),
+                    arguments: {'type': 'CC', 'name': getCCName});
               },
               icon: Icon(Icons.email),
             ),

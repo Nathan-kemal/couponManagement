@@ -1,3 +1,4 @@
+import 'package:coupon_manegement/screen/page/resdant_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
@@ -14,6 +15,20 @@ class _ResdantOptionState extends State<ResdantOption> {
 
   List<String> _choicesList = ['YES', 'NO'];
   Map<String, dynamic> map = Get.arguments;
+
+  final Stream<QuerySnapshot> ccstream = FirebaseFirestore.instance
+      .collection('all_cc_database')
+      .snapshots(includeMetadataChanges: true);
+
+  var seleectedCC;
+  final GlobalKey<FormState> _formKeyValue = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -97,27 +112,132 @@ class _ResdantOptionState extends State<ResdantOption> {
               }),
             ),
             const SizedBox(
-              height: 100,
+              height: 50,
             ),
-            Container(
-              width: 200,
-              height: 75,
-              child: ElevatedButton(
+            Text(
+              'CC Place to Receive From',
+              style: TextStyle(
+                fontSize: 20,
+              ),
+            ),
+            StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection("all_cc_database")
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData)
+                    const Text("Loading.....");
+                  else {
+                    List<DropdownMenuItem> cclist = [];
+                    for (int i = 0; i < snapshot.data!.docs.length; i++) {
+                      DocumentSnapshot snap = snapshot.data!.docs[i];
+                      cclist.add(
+                        DropdownMenuItem<String>(
+                          child: Text(
+                            '${snap['cc name']}',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                            ),
+                          ),
+                          value: "${snap['cc name']}",
+                        ),
+                      );
+                    }
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(width: 50.0),
+                        DropdownButton<dynamic>(
+                          items: cclist,
+                          onChanged: (ccValue) {
+                            setState(() {
+                              seleectedCC = ccValue;
+                            });
+                          },
+                          value: seleectedCC,
+                          isExpanded: false,
+                          hint: new Text(
+                            "Choose CC Type",
+                            style: TextStyle(color: Color(0xff11b719)),
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+
+                  return Container();
+                }),
+            const SizedBox(
+              height: 50,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: RaisedButton(
+                color: Color(0xff11b719),
+                textColor: Colors.white,
+                child: Padding(
+                    padding: EdgeInsets.all(20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Text("Send", style: TextStyle(fontSize: 24.0)),
+                      ],
+                    )),
                 onPressed: () {
-                  FirebaseFirestore.instance
-                      .collection('CoustomerFeedback')
-                      .add({
-                    'id': '',
-                    'item': '${map['item']}',
-                    'isTaking': _choicesList[defaultChoiceIndex],
-                  });
+                  Get.defaultDialog(
+                      onConfirm: () {
+                        try {
+                          // FirebaseFirestore.instance
+                          //     .collection('CoustomerFeedback')
+                          //     .add({
+                          //   'id': '',
+                          //   'item': '${map['item']}',
+                          //   'isTaking': _choicesList[defaultChoiceIndex],
+                          // }).whenComplete(() => Get.off(() => ResdantScreen()));
+
+                          FirebaseFirestore.instance
+                              .collection('all_cc_database')
+                              .doc(seleectedCC)
+                              .collection('feedbacks')
+                              .doc('Customer')
+                              .collection('feedback')
+                              .add({
+                            'id': map['id'],
+                            'first name': map['first name'],
+                            'last name': map['last name'],
+                            'item': '${map['item']}',
+                            'isTaking': _choicesList[defaultChoiceIndex],
+                          }).whenComplete(() => Get.off(() => ResdantScreen()));
+                        } catch (e) {}
+                      },
+                      onCancel: () {},
+                      title: "Confirm",
+                      backgroundColor: Color(0xff212333),
+                      titleStyle: TextStyle(color: Colors.white),
+                      middleTextStyle: TextStyle(color: Colors.white),
+                      textConfirm: "Confirm",
+                      textCancel: "Cancel",
+                      cancelTextColor: Colors.white,
+                      confirmTextColor: Colors.white,
+                      buttonColor: Colors.red,
+                      barrierDismissible: false,
+                      content: Column(
+                        children: [
+                          Text(
+                            'Are you Going to Take the Item',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ));
                 },
-                child: Text(
-                  'Send',
-                  style: TextStyle(fontSize: 30),
+                shape: new RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(30.0),
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),

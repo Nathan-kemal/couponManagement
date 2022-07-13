@@ -1,3 +1,4 @@
+import 'package:coupon_manegement/screen/admin_screen.dart';
 import 'package:coupon_manegement/screen/page/aaca_screen.dart';
 import 'package:coupon_manegement/screen/page/cc_screen.dart';
 import 'package:coupon_manegement/screen/page/resdant_screen.dart';
@@ -57,7 +58,6 @@ class _LoginState extends State<Login> {
                     }
                   },
                   controller: username,
-                  obscureText: true,
                   decoration: InputDecoration(
                       fillColor: Colors.white,
                       filled: true,
@@ -103,14 +103,76 @@ class _LoginState extends State<Login> {
                           var hash = md5
                               .convert(utf8.encode(password.text))
                               .toString();
-                          Get.to(() => AACAScreen());
+
+                          try {
+                            FirebaseFirestore.instance
+                                .collection('Accounts')
+                                .doc('AACA')
+                                .collection('Registered')
+                                .where('name', isEqualTo: username.text)
+                                .where('password', isEqualTo: password.text)
+                                .get()
+                                .then((value) {
+                              if (value.docs.length > 0) {
+                                Get.to(() => AACAScreen());
+                              } else {
+                                setState(() {
+                                  isLoading = false;
+                                  msg = 'Account not found!';
+                                });
+                              }
+                            });
+                          } catch (e) {}
                           // check firebase
                         } else if (user == 'CC') {
                           var hash = md5
                               .convert(utf8.encode(password.text))
                               .toString();
-                          Get.to(() => CCScreen());
+
+                          try {
+                            FirebaseFirestore.instance
+                                .collection('all_cc_database')
+                                .where('cc name', isEqualTo: username.text)
+                                .where('password', isEqualTo: hash)
+                                .get()
+                                .then((value) {
+                              if (value.docs.length > 0) {
+                                Get.to(() => CCScreen(),
+                                    arguments: value.docs[0].get('cc name'));
+                              } else {
+                                setState(() {
+                                  isLoading = false;
+                                  msg = 'Account not found!';
+                                });
+                              }
+                            });
+                          } catch (e) {}
+
                           // check firebase
+                        } else if (user == 'ADMIN') {
+                          var hash = md5
+                              .convert(utf8.encode(password.text))
+                              .toString();
+
+                          try {
+                            FirebaseFirestore.instance
+                                .collection('Accounts')
+                                .doc('Admin')
+                                .collection('Registered')
+                                .where('username', isEqualTo: username.text)
+                                .where('password', isEqualTo: hash)
+                                .get()
+                                .then((value) {
+                              if (value.docs.length > 0) {
+                                Get.off(() => AdminScreen());
+                              } else {
+                                setState(() {
+                                  isLoading = false;
+                                  msg = 'Account not found!';
+                                });
+                              }
+                            });
+                          } catch (e) {}
                         } else if (user == 'Customer') {
                           var hash = md5
                               .convert(utf8.encode(password.text))
@@ -125,7 +187,12 @@ class _LoginState extends State<Login> {
                                 .get()
                                 .then((value) {
                               if (value.docs.length > 0) {
-                                Get.to(() => ResdantScreen());
+                                print('pull up ${value.docs[0].data()}');
+                                Get.to(() => ResdantScreen(), arguments: {
+                                  'fn': '${value.docs[0].get('first name')}',
+                                  'ln': '${value.docs[0].get('last name')}',
+                                  'id': '${value.docs[0].get('id number')}'
+                                });
                               } else {
                                 setState(() {
                                   isLoading = false;

@@ -1,18 +1,17 @@
+import 'package:coupon_manegement/screen/admin_screen.dart';
 import 'package:coupon_manegement/screen/auth/verification.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+class AddResdant extends StatefulWidget {
+  const AddResdant({Key? key}) : super(key: key);
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<AddResdant> createState() => _AddResdantState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _AddResdantState extends State<AddResdant> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController firstName = TextEditingController();
   TextEditingController lastName = TextEditingController();
@@ -34,7 +33,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         appBar: AppBar(
           backgroundColor: Color(0xff212333),
           title: Text(
-            'Registration Form',
+            'Add Resident',
           ),
         ),
         body: Form(
@@ -112,6 +111,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
+                  maxLength: 10,
                   controller: phoneNumber,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -119,7 +119,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     }
                   },
                   keyboardType: TextInputType.number,
-                  maxLength: 10,
                   decoration: InputDecoration(
                       fillColor: Colors.white,
                       filled: true,
@@ -134,47 +133,52 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       // Check Firebase
-                      setState(() {
-                        isLoading = true;
-                      });
-                      try {
-                        final doc = FirebaseFirestore.instance
-                            .collection('all_resdant_database')
-                            .get()
-                            .then((value) {
-                          value.docs.forEach((element) {
-                            int counter = 0;
-                            int length = value.docs.length;
-                            final fn = element.get('first name');
-                            final ln = element.get('last name');
-                            final idn = element.get('id number');
-                            final housen = element.get('house number');
-
-                            print('nathan Fire ${fn} $ln, $idn $housen');
-                            print(
-                                'nathan Text ${firstName.text} ${lastName.text}, ${idNumber.text}  $housen');
-
-                            if (fn == firstName.text &&
-                                ln == lastName.text &&
-                                idn == idNumber.text &&
-                                housen == houseNumber.text) {
-                              Get.to(() => VerificationScreen(), arguments: {
+                      Get.defaultDialog(
+                          onConfirm: () {
+                            try {
+                              final doc = FirebaseFirestore.instance
+                                  .collection('all_resdant_database')
+                                  .doc(idNumber.text)
+                                  .set({
                                 'id number': idNumber.text,
                                 'house number': houseNumber.text,
                                 'first name': firstName.text,
                                 'last name': lastName.text,
-                              });
-                            } else {
-                              setState(() {
-                                isLoading = false;
-                                msg = 'User Not Found!';
-                              });
-                            }
-
-                            counter++;
-                          });
-                        });
-                      } catch (e) {}
+                              }).then((value) => Get.offAll(
+                                        () => AdminScreen(),
+                                        arguments: 'Add User to database',
+                                      ));
+                            } catch (e) {}
+                          },
+                          onCancel: () {
+                            Navigator.pop(context);
+                            setState(() {
+                              isLoading = false;
+                            });
+                          },
+                          title: "Add Resdant",
+                          backgroundColor: Color(0xff212333),
+                          titleStyle: TextStyle(color: Colors.white),
+                          middleTextStyle: TextStyle(color: Colors.white),
+                          textConfirm: "Confirm",
+                          textCancel: "Cancel",
+                          cancelTextColor: Colors.white,
+                          confirmTextColor: Colors.white,
+                          buttonColor: Colors.red,
+                          barrierDismissible: false,
+                          content: Column(
+                            children: [
+                              Text(
+                                'Are you sure You Want To Add Resdant',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              )
+                            ],
+                          ));
+                      setState(() {
+                        isLoading = true;
+                      });
                     }
                   },
                   child: Text('Next'),

@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
-class CoustomerFeedback extends StatefulWidget {
+class CCAACAFeedback extends StatefulWidget {
   String name;
-  CoustomerFeedback({Key? key, required this.name}) : super(key: key);
+  CCAACAFeedback({Key? key, required this.name}) : super(key: key);
   @override
-  State<CoustomerFeedback> createState() => _CoustomerFeedbackState();
+  State<CCAACAFeedback> createState() => _CCAACAFeedbackState();
 }
 
-class _CoustomerFeedbackState extends State<CoustomerFeedback> {
+class _CCAACAFeedbackState extends State<CCAACAFeedback> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
@@ -17,7 +17,7 @@ class _CoustomerFeedbackState extends State<CoustomerFeedback> {
           .collection('all_cc_database')
           .doc(widget.name)
           .collection('feedbacks')
-          .doc('Customer')
+          .doc('AACA')
           .collection('feedback')
           .snapshots(),
       builder: (context, snapshot) {
@@ -34,7 +34,7 @@ class _CoustomerFeedbackState extends State<CoustomerFeedback> {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                '${snapshot.data?.docs[index].get('id')}',
+                                '${snapshot.data?.docs[index].get('sender')}',
                                 style: TextStyle(
                                   fontSize: 25,
                                   color: Colors.white,
@@ -42,14 +42,7 @@ class _CoustomerFeedbackState extends State<CoustomerFeedback> {
                               ),
                             ),
                             Text(
-                              '${snapshot.data?.docs[index].get('item')}',
-                              style: TextStyle(
-                                fontSize: 25,
-                                color: Colors.white,
-                              ),
-                            ),
-                            Text(
-                              '${snapshot.data?.docs[index].get('isTaking')}',
+                              '${snapshot.data?.docs[index].get('feedback')}',
                               style: TextStyle(
                                 fontSize: 25,
                                 color: Colors.white,

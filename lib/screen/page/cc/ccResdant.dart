@@ -95,7 +95,7 @@ class _CCResdantState extends State<CCResdant> {
                       padding: const EdgeInsets.all(8.0),
                       child: TextFormField(
                         style: TextStyle(
-                          color: Colors.white,
+                          color: Colors.black,
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -117,7 +117,7 @@ class _CCResdantState extends State<CCResdant> {
                       padding: const EdgeInsets.all(8.0),
                       child: TextFormField(
                         style: TextStyle(
-                          color: Colors.white,
+                          color: Colors.black,
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -138,7 +138,7 @@ class _CCResdantState extends State<CCResdant> {
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Colors.black,
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
